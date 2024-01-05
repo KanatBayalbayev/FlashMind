@@ -3,7 +3,9 @@ package com.smartappsdev.flashmind
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.smartappsdev.flashmind.databinding.ActivityMainBinding
 import com.smartappsdev.flashmind.models.BoardSize
 import com.smartappsdev.flashmind.models.MemoryCard
@@ -11,6 +13,9 @@ import com.smartappsdev.flashmind.models.MemoryGame
 import com.smartappsdev.flashmind.utils.DEFAULT_ICONS
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var gameAdapter: MemoryBoardAdapter
+    private lateinit var memoryGame: MemoryGame
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -20,22 +25,42 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val memoryGame = MemoryGame(boardSize)
+        memoryGame = MemoryGame(boardSize)
 
         with(binding) {
-            rvBoard.adapter = MemoryBoardAdapter(
+            gameAdapter = MemoryBoardAdapter(
                 this@MainActivity,
                 boardSize,
                 memoryGame.cards,
-                object : MemoryBoardAdapter.CardClickListener{
+                object : MemoryBoardAdapter.CardClickListener {
                     override fun onCardClicked(position: Int) {
-                        Log.d("MainActivity", position.toString())
+                        updateGameWithFlip(position)
                     }
 
                 }
             )
+            rvBoard.adapter = gameAdapter
             rvBoard.setHasFixedSize(true)
             rvBoard.layoutManager = GridLayoutManager(this@MainActivity, boardSize.getWidth())
         }
+    }
+
+    private fun updateGameWithFlip(position: Int) {
+
+        if (memoryGame.haveWonGame()) {
+            Snackbar.make(binding.clRoot, "You already won! Use the menu to play again.", Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (memoryGame.isCardFaceUp(position)) {
+            Snackbar.make(binding.clRoot, "Invalid move!", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        if (memoryGame.flipCard(position)) {
+            Log.d("MainActivity", "Found a match! Num pairs found: ${memoryGame.numPairsFound}")
+        }
+
+        memoryGame.flipCard(position)
+        gameAdapter.notifyDataSetChanged()
+
     }
 }
