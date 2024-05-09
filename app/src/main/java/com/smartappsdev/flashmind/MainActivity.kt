@@ -47,8 +47,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateGameWithFlip(position: Int) {
 
-        Log.d("TAG", "updateGameWithFlip: A new change here")
-        Log.d("TAG", "updateGameWithFlip: Added Some new changes here")
+        Log.d("TAG", "updateGameWithFlip: A new change here после пула замечания")
+        Log.d("TAG", "updateGameWithFlip: Added Some new changes here после пула замечания 2")
         Log.d("TAG", "updateGameWithFlip: Added Some new changes here repeat")
 
         if (memoryGame.haveWonGame()) {
