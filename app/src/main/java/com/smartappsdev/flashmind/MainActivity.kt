@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateGameWithFlip(position: Int) {
 
         Log.d("TAG", "updateGameWithFlip: A new change here")
+        Log.d("TAG", "updateGameWithFlip: Added Some new changes here")
 
         if (memoryGame.haveWonGame()) {
             Snackbar.make(binding.clRoot, "You already won! Use the menu to play again.", Snackbar.LENGTH_LONG).show()
